@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Primi passi con React</title>
+		<script src="https://fb.me/react-with-addons-0.14.0.js"></script>
+		<script src="https://fb.me/react-dom-0.14.0.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+	</head>
+	<body>
+		<body>
+	<div id="hello"></div>
+	<div id="hr_"></div>
+		<div id="hello2"></div>
+	<script type="text/babel">
+		var HelloWorld = React.createClass({
+				render: function() {
+					return <p>Hello <strong>React</strong>!</p>;
+				}
+		});
+		ReactDOM.render(<HelloWorld />, document.getElementById("hello"));
+		
+		ReactDOM.render(React.createElement('hr', { style: { height:'0.1em', background: 'yellow' } } ), document.getElementById('hr_'));
+	
+		ReactDOM.render(React.createElement(HelloWorld),document.getElementById('hello2'));
+		
+		
+	</script>
+	
+	
+<script type="text/babel">
+var LoggedUser = React.createClass({
+	render: function() {
+		return <p>
+			   Benvenuto <strong>{this.props.user.fullName().toUpperCase()}</strong>,
+			   sei collegato come <em>{this.props.user.userName}</em>.
+			   </p>
+		}
+});
+var userInfo = {
+	userName  : 'admin',
+	firstName : 'Mario',
+	lastName  : 'Fusco',
+	fullName  : function() {
+			return this.firstName + ' ' + this.lastName;
+	}
+};
+ReactDOM.render(<LoggedUser user={userInfo}/>, document.getElementById("container1"));
+ 
+</script>
+	
+	<script type="text/babel">
+	// Crea gli elementi da inserire nella lista
+var item1 = React.DOM.li({ className: "item-1", key: "item-1"}, "Item 1");
+var item2 = React.DOM.li({ className: "item-2", key: "item-2"}, "Item 2");
+var item3 = React.DOM.li({ className: "item-3", key: "item-3"}, "Item 3");
+// Crea un array degli elementi
+var itemArray = [item1, item2, item3];
+// Crea la lista degli elementi
+var listElement = React.DOM.ul({ className: "list-of-items" }, itemArray);
+// Lancia il rendering nella pagina
+ReactDOM.render(listElement, document.getElementById("container2"));
+
+var listElement =	<ul className="list-of-items">
+						<li className="item-1">Item 1</li>
+						<li className="item-2">Item 2</li>
+						<li className="item-3">Item 3</li>
+					</ul>;
+// Lancia il rendering nella pagina
+ReactDOM.render(listElement, document.getElementById("container3"));
+
+</script>
+
+
+<script type="text/babel">
+        var LikeButton = React.createClass({
+		getInitialState: function() {
+			return { liked: false };
+		},
+		render: function() {
+		if (this.state.liked)
+			return <div>Ti piace!</div>
+		else
+			return <a href="#" onClick={this.doLike}>Mi piace</a>
+		},
+        doLike: function() {
+		this.setState({ liked: true });
+		}
+	});
+        ReactDOM.render(<LikeButton />, document.getElementById("container4"));
+
+
+		
+var h1 = React.createElement('h1', { style: { fontSize: 'larger'} }, 'Titolo');
+var p1 = React.createElement('p', { className: 'text-info' }, 'Testo primo paragrafo');
+var p2 = React.createElement('p', { className: 'text-info' }, 'Testo altro paragrafo');
+var article = React.createElement('article', { className: 'container' }, [h1, p1, p2]);
+ReactDOM.render(article, document.getElementById('container5'));
+
+
+var articleElement =
+        <article className='container'>
+          <h1 style={{fontSize: 'larger', color:'red'}}>Titolo principale</h1>
+          <p className='text-info'>Testo del primo paragrafo</p>
+          <p className='text-info'>Testo del secondo paragrafo</p>
+        </article>;
+ReactDOM.render(articleElement, document.getElementById('container6'));
+
+
+
+var Timer = React.createClass({
+	doTick: function () {
+        this.setState({ counter: this.state.counter + 1 });
+    },
+    resetCounter: function () {
+      this.setState({ counter: 0 });
+    },
+    componentDidMount: function () {
+        this.tickInterval = setInterval(this.doTick, 1000);
+    },
+    componentWillUnmount: function () {
+        clearInterval(this.tickInterval);
+    },
+    getInitialState: function () {
+        return { counter: 0 }
+    },
+    render: function () {
+        return (
+            <div className="well">
+                <button type="button"
+                    title="Clic per resettare il timer"
+                    onClick={this.resetCounter}>Reset
+                  </button>
+                &nbsp;
+                <span className="glyphicon glyphicon-time"></span>
+                &nbsp;
+                <strong>{this.state.counter}</strong>
+            </div>
+        );
+    }
+});
+ReactDOM.render(<Timer />, document.getElementById('container7'));
+
+
+
+var MyTimer = React.createClass({
+
+getInitialState: function () {
+    return {
+        counter: parseInt(this.props.initialCounter),
+        step: parseInt(this.props.initialStep)
+    }
+},
+
+doTick: function () {
+    var newCounter = this.state.counter;
+	if (newCounter <= 0) return;
+	newCounter -= this.state.step;
+	if (newCounter < 0) newCounter = 0;
+	this.setState({ counter: newCounter });
+},
+
+componentDidMount: function () {
+        this.tickInterval = setInterval(this.doTick, 1000);
+    },
+resetCounter: function () {
+	this.setState({ counter: this.props.initialCounter });
+},
+speedDown: function () {
+	if (this.state.step <= 0) return;
+	this.setState({ step: this.state.step - 1 });
+},
+speedUp: function () {
+    this.setState({ step: this.state.step + 1 });
+},
+getDelta: function () {
+    return this.props.initialCounter - this.state.counter;
+},
+render: function () {
+    return (
+		
+        <div>
+			
+            <strong>{this.state.counter}</strong>
+            &nbsp;
+            <small>{this.getDelta()}</small>
+            &nbsp;
+            <button type="button" onClick={this.resetCounter}>Reset</button>
+            <button type="button" onClick={this.speedUp}>+</button>
+            <button type="button" onClick={this.speedDown}>-</button>
+        </div>
+    );
+}
+
+
+});
+
+ReactDOM.render(<MyTimer initialCounter="1000" initialStep="1" />, document.getElementById('container8'));
+
+
+var ImageLink = function (props) {
+    return (
+            <a href={props.href} target="_blank">
+                <img src={props.src}     />
+            </a>
+    );
+};
+ReactDOM.render(
+    <ImageLink
+		href="http://www.html.it"
+        src="http://www.gruppohtml.it/Images/Network/Loghi/logoHTML.jpg" />,
+    document.getElementById('container9')
+);
+
+var HelloWorld = function () {
+    return <p>Hello World!</p>;
+};
+ReactDOM.render(<HelloWorld />, document.getElementById('container10'));
+
+
+function tick() {
+    const element = (
+            <div>
+                <h1>Ciao a tutti!</h1>
+                <h2>Sono le ore {new Date().toLocaleTimeString()}.</h2>
+            </div>
+    );
+    ReactDOM.render(
+            element,
+            document.getElementById('container10')
+    );
+}
+setInterval(tick, 1000);
+
+
+
+</script>
+
+
+
+<body>
+<div id="container1"></div>
+
+<div id="container2"></div>
+
+<div id="container3"></div>
+
+<div id="container4"></div>
+		 
+<div id="container5"></div>
+
+<div id="container6"></div>
+
+<div id="container7"></div>
+<br/>
+<div id="container8"></div>
+
+<div id="container9"></div>
+
+<div id="container10"></div>
+
+
+	</body>
+</html>
